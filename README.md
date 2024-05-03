@@ -1,4 +1,4 @@
-# deploy-a-reverse-proxy-server-using-apache-nginx-and-traefik
+# deploy-a-reverse-proxy-server
 
 first the application we used to deploy the reverse proxy for is the beetroot api, found here : https://github.com/skandix/Beetroot.git
 we will deploy different services and configure it to work as reverse proxy in containers using docker
