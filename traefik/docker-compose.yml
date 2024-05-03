@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  beetroot-api:
+    image: beetroot-api:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=${API_PORT}
+      - LOG_LEVEL=${API_LOG_LEVEL}
+      - TZ=${API_TZ}
+    networks:
+      - backend
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.beetroot-api.rule=Host(beetroot-api.local)"
+      - "traefik.http.services.beetroot-api.loadbalancer.server.port=8080"
+
+
+
+  traefik:
+    image: traefik:v2.5
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--providers.file.directory=/config"
+      - "--providers.file.watch=true"
+    ports:
+      - "80:80"
+      - "8181:8080"  # Traefik dashboard
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    
+
+    networks:
+      - backend  # Attach to the backend network
+
+
+networks:
+  backend:
+    driver: bridge

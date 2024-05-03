@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  apache:
+    image: httpd:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./httpd.conf:/usr/local/apache2/conf/httpd.conf
+    networks:
+      - backend
+
+  beetroot-api:
+    image: beetroot-api:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=${API_PORT}
+      - LOG_LEVEL=${API_LOG_LEVEL}
+      - TZ=${API_TZ}
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
